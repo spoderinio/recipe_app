@@ -84,11 +84,11 @@ def search_recipes(query):
     """Търси рецепти по име или съставки (case-insensitive)"""
     conn = get_db()
     cursor = conn.cursor()
-    search_term = f'%{query}%'
+    search_term = f'%{query.lower()}%'  # Преобразуваме в малки букви
     cursor.execute(
         '''SELECT * FROM recipes 
-           WHERE name LIKE ? COLLATE NOCASE 
-           OR ingredients LIKE ? COLLATE NOCASE 
+           WHERE LOWER(name) LIKE ? 
+           OR LOWER(ingredients) LIKE ? 
            ORDER BY name COLLATE NOCASE ASC''',
         (search_term, search_term)
     )
