@@ -81,20 +81,26 @@ def get_all_recipes():
     return recipes
 
 def search_recipes(query):
-    """Търси рецепти по име или съставки (case-insensitive)"""
+    """Търси рецепти по име или съставки (case-insensitive за кирилица)"""
     conn = get_db()
     cursor = conn.cursor()
-    search_term = f'%{query}%'  # НЕ преобразуваме query
-    cursor.execute(
-        '''SELECT * FROM recipes 
-           WHERE LOWER(name) LIKE LOWER(?) 
-           OR LOWER(ingredients) LIKE LOWER(?) 
-           ORDER BY name COLLATE NOCASE ASC''',
-        (search_term, search_term)
-    )
-    recipes = cursor.fetchall()
+    
+    # Вземаме всички рецепти
+    cursor.execute('SELECT * FROM recipes ORDER BY name')
+    all_recipes = cursor.fetchall()
     conn.close()
-    return recipes
+    
+    # Филтрираме в Python (защото SQLite LOWER() не работи с кирилица)
+    query_lower = query.lower()
+    results = []
+    for recipe in all_recipes:
+        name_lower = recipe['name'].lower()
+        ingredients_lower = recipe['ingredients'].lower()
+        
+        if query_lower in name_lower or query_lower in ingredients_lower:
+            results.append(recipe)
+    
+    return results
 
 def update_recipe(recipe_id, name, ingredients, instructions, category='Други'):
     """Обновява съществуваща рецепта"""
