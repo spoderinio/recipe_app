@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Администрация - Книга с рецепти</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content container">
+            <h1>⚙️ Администраторски панел</h1>
+            <div class="nav-links">
+                <a href="/">🏠 Начало</a>
+                <button id="theme-toggle" class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <!-- Admin Navigation -->
+        <div class="admin-nav">
+            <button class="btn btn-primary admin-nav-active" onclick="showAdminSection('recipes')">📖 Рецепти</button>
+            <button class="btn btn-secondary" onclick="window.location.href='/admin/categories'">🗂️ Категории</button>
+        </div>
+        <!-- Add/Edit Recipe Form -->
+        <div class="admin-form">
+            <h2>➕ Добави нова рецепта</h2>
+            <form id="recipe-form" onsubmit="submitRecipe(event)">
+                <div class="form-group">
+                    <label for="recipe-name">Име на рецептата:</label>
+                    <input 
+                        type="text" 
+                        id="recipe-name" 
+                        name="name" 
+                        placeholder="Напр. Баница с плънка"
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="recipe-ingredients">Съставки:</label>
+                    <textarea 
+                        id="recipe-ingredients" 
+                        name="ingredients" 
+                        placeholder="Напишете съставките всяка на нов ред или разделени със запетая..."
+                        required
+                    ></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="recipe-instructions">Начин на приготвяне:</label>
+                    <textarea 
+                        id="recipe-instructions" 
+                        name="instructions" 
+                        placeholder="Опишете стъпките за приготвяне..."
+                        required
+                    ></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="recipe-category">Категория:</label>
+                    <div class="category-input-group">
+                        <select id="recipe-category-select" class="category-select" onchange="handleCategorySelect(this.value)">
+                            <option value="">-- Изберете категория --</option>
+                            {% for category in categories %}
+                            <option value="{{ category.category }}">{{ category.category }}</option>
+                            {% endfor %}
+                            <option value="__new__">➕ Нова категория...</option>
+                        </select>
+                        <input 
+                            type="text" 
+                            id="recipe-category-input" 
+                            class="category-input" 
+                            placeholder="Или въведете нова категория..."
+                            style="display: none;"
+                        >
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">➕ Добави рецепта</button>
+            </form>
+        </div>
+        
+        <!-- Recipe List -->
+        <div class="admin-recipe-list">
+            <h2>📋 Списък с рецепти</h2>
+            <div id="admin-recipe-list">
+                {% if recipes %}
+                    {% for recipe in recipes %}
+                    <div class="admin-recipe-item">
+                        <div class="admin-recipe-name">{{ recipe.name }}</div>
+                        <div class="admin-recipe-actions">
+                            <button class="btn btn-secondary" onclick="editRecipe({{ recipe.id }})">✏️ Редактирай</button>
+                            <button class="btn btn-danger" onclick="deleteRecipe({{ recipe.id }}, '{{ recipe.name|replace("'", "\\'") }}')">🗑️ Изтрий</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="empty-state">Все още няма рецепти</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

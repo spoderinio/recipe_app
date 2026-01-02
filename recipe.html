@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ recipe.name }} - Книга с рецепти</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content container">
+            <h1>📖 Книга с рецепти</h1>
+            <div class="nav-links">
+                <a href="/">🏠 Начало</a>
+                <a href="/admin">⚙️ Админ</a>
+                <button id="theme-toggle" class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div style="margin-top: 20px;">
+            <button class="btn btn-back" onclick="window.location.href='/'">← Назад към списъка</button>
+        </div>
+        
+        <div class="recipe-detail">
+            <div class="recipe-header">
+                <h2>{{ recipe.name }}</h2>
+                <span class="recipe-category-badge">📂 {{ recipe.category }}</span>
+            </div>
+            
+            <div class="recipe-section">
+                <h3>🥘 Съставки:</h3>
+                <p>{{ recipe.ingredients }}</p>
+            </div>
+            
+            <div class="recipe-section">
+                <h3>👨‍🍳 Начин на приготвяне:</h3>
+                <p id="instructions-text">{{ recipe.instructions }}</p>
+                
+                <!-- Text-to-Speech Button -->
+                <button 
+                    class="btn btn-secondary tts-button" 
+                    id="tts-button"
+                    onclick="toggleTTS(document.getElementById('instructions-text').textContent, this)"
+                >
+                    🔊 Изчети стъпките
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/js/app.js"></script>
+    <script>
+        // Проверка дали TTS е наличен
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!('speechSynthesis' in window)) {
+                const ttsBtn = document.getElementById('tts-button');
+                if (ttsBtn) {
+                    ttsBtn.style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

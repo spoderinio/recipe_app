@@ -1,0 +1,24 @@
+[Unit]
+Description=Recipe App - Web-based Recipe Management System
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/recipe_app
+# Използваме Python от virtual environment
+ExecStart=/home/pi/recipe_app/venv/bin/python /home/pi/recipe_app/app.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Environment variables (ако са необходими)
+Environment="PYTHONUNBUFFERED=1"
+
+# Ограничения за сигурност (опционално)
+# NoNewPrivileges=true
+# PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

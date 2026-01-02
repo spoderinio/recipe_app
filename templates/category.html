@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ category_name }} - Книга с рецепти</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content container">
+            <h1>📖 Книга с рецепти</h1>
+            <div class="nav-links">
+                <a href="/">🏠 Начало</a>
+                <a href="/admin">⚙️ Админ</a>
+                <button id="theme-toggle" class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div style="margin-top: 20px; margin-bottom: 10px;">
+            <button class="btn btn-back" onclick="window.location.href='/'">← Назад към категории</button>
+        </div>
+        
+        <div class="category-header">
+            <h2>📂 {{ category_name }}</h2>
+            <p class="category-subtitle">{{ recipes|length }} {% if recipes|length == 1 %}рецепта{% elif recipes|length < 5 %}рецепти{% else %}рецепти{% endif %}</p>
+        </div>
+        
+        <!-- Search in Category -->
+        <div class="search-container">
+            <input 
+                type="text" 
+                id="category-search-input" 
+                class="search-input" 
+                placeholder="🔍 Търси в {{ category_name }}..."
+                oninput="searchInCategory(this.value, '{{ category_name }}')"
+            >
+            <span class="search-icon">🔍</span>
+        </div>
+        
+        <!-- Recipe Grid -->
+        <div class="recipe-grid" id="recipe-grid">
+            {% if recipes %}
+                {% for recipe in recipes %}
+                <div class="recipe-card" onclick="window.location.href='/recipe/{{ recipe.id }}'">
+                    <h3>{{ recipe.name }}</h3>
+                    <p>{{ recipe.ingredients[:100] }}{% if recipe.ingredients|length > 100 %}...{% endif %}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state" style="grid-column: 1 / -1;">
+                    <div class="empty-state-icon">📂</div>
+                    <h3>Няма рецепти в тази категория</h3>
+                    <p>Добавете рецепта от администраторския панел</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
